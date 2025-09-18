@@ -1,30 +1,25 @@
-namespace Dishapi
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+var app = builder.Build();
+
+// Enable Swagger UI at root
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Dish API V1");
+    c.RoutePrefix = ""; // Swagger available at http://localhost:5000/
+});
 
-            // Add services to the container
-            builder.Services.AddControllers();
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+// Disable HTTPS for local testing
+// app.UseHttpsRedirection();
 
-            var app = builder.Build();
+app.UseAuthorization();
 
-            // Configure the HTTP request pipeline
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+app.MapControllers();
 
-            app.UseHttpsRedirection();
-            app.UseAuthorization();
-            app.MapControllers();
-
-            app.Run();
-        }
-    }
-}
+app.Run("http://localhost:5000"); // Explicitly listen on HTTP port
