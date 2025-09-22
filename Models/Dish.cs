@@ -1,20 +1,19 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace Dishapi.Models
 {
     public class Dish
     {
-        public Guid Id { get; set; }
-
-        [Required]
-        [StringLength(100)]
+        public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
-
-        [Required]
-        [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than 0")]
+        public string NameEn { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public string DescriptionEn { get; set; } = string.Empty;
         public decimal Price { get; set; }
-
-        [StringLength(500)]
-        public string? Description { get; set; }
+        public string Category { get; set; } = string.Empty;
+        public string CategoryEn { get; set; } = string.Empty;
+        public string ImageUrl { get; set; } = string.Empty;
+        public bool IsAvailable { get; set; } = true;
+        public bool Vegetarian { get; set; } = false;
+        public double Rating { get; set; } = 0.0;
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
     }
 }
