@@ -1,25 +1,35 @@
+using Dishapi.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services
+// Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
-
-// Enable Swagger UI at root
-app.UseSwagger();
-app.UseSwaggerUI(c =>
+// Add CORS
+builder.Services.AddCors(options =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Dish API V1");
-    c.RoutePrefix = ""; // Swagger available at http://localhost:5000/
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
 });
 
-// Disable HTTPS for local testing
-// app.UseHttpsRedirection();
+var app = builder.Build();
 
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseHttpsRedirection();
+app.UseCors("AllowAll");
 app.UseAuthorization();
-
 app.MapControllers();
 
-app.Run("http://localhost:5000"); // Explicitly listen on HTTP port
+app.Run();
