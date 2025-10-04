@@ -2,7 +2,10 @@
 {
     public class ProfileCreateDto
     {
-        public string FullName { get; set; } = null!;
-        public string? Bio { get; set; }
+        public string FirstName { get; set; } = null!;
+        public string LastName { get; set; } = null!;
+        public string? Address { get; set; }
+        public string? Phone { get; set; }
+        public string FullName => $"{FirstName} {LastName}";
     }
 }

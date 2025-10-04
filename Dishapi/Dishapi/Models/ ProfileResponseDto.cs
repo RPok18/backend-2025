@@ -2,9 +2,11 @@
 {
     public class ProfileResponseDto
     {
-        public int Id { get; set; }
-        public string UserId { get; set; } = null!;
-        public string FullName { get; set; } = null!;
+        public string Id { get; set; } = null!;
+        public string? FullName { get; set; }
         public string? Bio { get; set; }
+        public DateTime? BirthDate { get; set; }
+        public string? Address { get; set; }
+        public string? Phone { get; set; }
     }
 }

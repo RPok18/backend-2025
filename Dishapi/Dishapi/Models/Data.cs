@@ -1,26 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Dishapi.Models;
+﻿using Microsoft.EntityFrameworkCore;  // ADD THIS
+using System;
 
-namespace Dishapi.Data
+namespace Dishapi.Models
 {
-    public class ProfileDbContext : DbContext
+    public class Data
     {
-        public ProfileDbContext(DbContextOptions<ProfileDbContext> options) : base(options)
+        // Your properties here
+
+        public static void OnModelCreating(ModelBuilder modelBuilder)
         {
-        }
-
-        public DbSet<Profile> Profiles { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<Profile>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-                entity.HasIndex(e => e.UserId).IsUnique();
-                entity.Property(e => e.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
-            });
+            // Configuration code
         }
     }
 }

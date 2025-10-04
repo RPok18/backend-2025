@@ -1,7 +1,4 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using Dishapi.Data;
 using Dishapi.Services;
 
@@ -30,61 +27,12 @@ builder.Services.AddCors(options =>
     });
 });
 
-// JWT Authentication
-var jwtKey = builder.Configuration["Jwt:Key"];
-var jwtIssuer = builder.Configuration["Jwt:Issuer"];
-var jwtAudience = builder.Configuration["Jwt:Audience"];
-
-builder.Services
-    .AddAuthentication(options =>
-    {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
-    .AddJwtBearer(options =>
-    {
-        options.RequireHttpsMetadata = false; // set true in prod
-        options.SaveToken = true;
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidIssuer = jwtIssuer,
-            ValidateAudience = true,
-            ValidAudience = jwtAudience,
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
-            ValidateLifetime = true
-        };
-    });
-
-builder.Services.AddAuthorization();
-
 var app = builder.Build();
-
-// Dev-only test user middleware (OPTIONAL) — keep only for local dev if you don't have tokens yet
-if (app.Environment.IsDevelopment())
-{
-    app.Use(async (ctx, next) =>
-    {
-        if (!ctx.User.Identity?.IsAuthenticated ?? true)
-        {
-            var claims = new[] { new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.NameIdentifier, "dev-user-1") };
-            var identity = new System.Security.Claims.ClaimsIdentity(claims, "Development");
-            ctx.User = new System.Security.Claims.ClaimsPrincipal(identity);
-        }
-        await next();
-    });
-}
 
 // Middleware pipeline
 app.UseSwagger();
 app.UseSwaggerUI();
-
 app.UseCors("AllowAll");
-
-app.UseAuthentication();
-app.UseAuthorization();
-
 app.MapControllers();
 
 app.MapGet("/", () => Results.Json(new

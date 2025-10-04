@@ -1,7 +1,0 @@
-E:\Backend\Profileapi\Profileapi\obj\Debug\net8.0\Profileapi.csproj.AssemblyReference.cache
-E:\Backend\Profileapi\Profileapi\obj\Debug\net8.0\Profileapi.GeneratedMSBuildEditorConfig.editorconfig
-E:\Backend\Profileapi\Profileapi\obj\Debug\net8.0\Profileapi.AssemblyInfoInputs.cache
-E:\Backend\Profileapi\Profileapi\obj\Debug\net8.0\Profileapi.AssemblyInfo.cs
-E:\Backend\Profileapi\Profileapi\obj\Debug\net8.0\Profileapi.csproj.CoreCompileInputs.cache
-E:\Backend\Profileapi\Profileapi\obj\Debug\net8.0\Profileapi.MvcApplicationPartsAssemblyInfo.cs
-E:\Backend\Profileapi\Profileapi\obj\Debug\net8.0\Profileapi.MvcApplicationPartsAssemblyInfo.cache
