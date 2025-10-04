@@ -64,7 +64,7 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// Dev-only test user middleware (OPTIONAL) — keep only for local dev if you don't have tokens yet
+
 if (app.Environment.IsDevelopment())
 {
     app.Use(async (ctx, next) =>
