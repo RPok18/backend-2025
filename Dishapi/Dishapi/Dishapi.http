@@ -1,0 +1,6 @@
+@Dishapi_HostAddress = http://localhost:5184
+
+GET {{Dishapi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
