@@ -7,7 +7,7 @@ namespace Dishapi.Models
         public int Id { get; set; }
 
         [Required]
-        public string UserId { get; set; } // Links to authenticated user
+        public string UserId { get; set; } 
 
         [Required]
         [StringLength(100)]
@@ -32,7 +32,7 @@ namespace Dishapi.Models
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 
-        // Computed property
+        
         public int Age => DateTime.Now.Year - BirthDate.Year -
             (DateTime.Now.DayOfYear < BirthDate.DayOfYear ? 1 : 0);
     }

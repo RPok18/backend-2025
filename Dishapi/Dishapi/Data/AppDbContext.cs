@@ -12,7 +12,7 @@ namespace Dishapi.Data
         public DbSet<Dish> Dishes { get; set; }
         public DbSet<Class1> Classes { get; set; }
         public DbSet<Profile> Profiles { get; set; }
-        // Removed: public DbSet<User> Users { get; set; }
+        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
