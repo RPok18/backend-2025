@@ -15,8 +15,9 @@ namespace Dishapi.Services
 
         public async Task<Profile> GetProfileAsync(string userId)
         {
+            int userIdInt = int.Parse(userId);
             var profile = await _context.Profiles
-                .FirstOrDefaultAsync(p => p.UserId == userId);
+                .FirstOrDefaultAsync(p => p.UserId == userIdInt);
 
             if (profile == null)
                 throw new KeyNotFoundException($"Profile not found for user {userId}");
@@ -26,21 +27,26 @@ namespace Dishapi.Services
 
         public async Task<ProfileResponseDto?> GetProfileByUserIdAsync(string userId)
         {
+            int userIdInt = int.Parse(userId);
             var profile = await _context.Profiles
-                .FirstOrDefaultAsync(p => p.UserId == userId);
+                .FirstOrDefaultAsync(p => p.UserId == userIdInt);
 
             return profile == null ? null : MapToResponseDto(profile);
         }
 
         public async Task<ProfileResponseDto> CreateProfileAsync(string userId, ProfileCreateDto dto)
         {
+            int userIdInt = int.Parse(userId);
+
             var profile = new Profile
             {
-                Id = Guid.NewGuid().ToString(),
-                UserId = userId,
-                FullName = dto.FullName, // Uses the computed property
-                Address = dto.Address,
-                Phone = dto.Phone
+                UserId = userIdInt,
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
+                FullName = dto.FullName,
+                Address = dto.Address ?? string.Empty,
+                Phone = dto.Phone ?? string.Empty,
+                CreatedAt = DateTime.UtcNow
             };
 
             _context.Profiles.Add(profile);
@@ -51,10 +57,10 @@ namespace Dishapi.Services
 
         public async Task<ProfileResponseDto?> UpdateProfileAsync(string id, ProfileUpdateDto dto)
         {
-            var profile = await _context.Profiles.FindAsync(id);
+            int profileId = int.Parse(id);
+            var profile = await _context.Profiles.FindAsync(profileId);
             if (profile == null) return null;
 
-            // Update only non-null properties
             if (dto.FullName != null)
                 profile.FullName = dto.FullName;
 
@@ -71,13 +77,13 @@ namespace Dishapi.Services
                 profile.Phone = dto.Phone;
 
             await _context.SaveChangesAsync();
-
             return MapToResponseDto(profile);
         }
 
         public async Task<bool> DeleteProfileAsync(string id)
         {
-            var profile = await _context.Profiles.FindAsync(id);
+            int profileId = int.Parse(id);
+            var profile = await _context.Profiles.FindAsync(profileId);
             if (profile == null) return false;
 
             _context.Profiles.Remove(profile);
@@ -87,16 +93,15 @@ namespace Dishapi.Services
 
         public async Task<bool> ProfileExistsAsync(string id)
         {
-            return await _context.Profiles.AnyAsync(p => p.Id == id);
+            int profileId = int.Parse(id);
+            return await _context.Profiles.AnyAsync(p => p.Id == profileId);
         }
 
-        // Helper method to map Profile to ProfileResponseDto
         private ProfileResponseDto MapToResponseDto(Profile profile)
         {
             return new ProfileResponseDto
             {
-                Id = profile.Id,
-                UserId = profile.UserId,
+                Id = profile.Id.ToString(),
                 FullName = profile.FullName,
                 Bio = profile.Bio,
                 BirthDate = profile.BirthDate,
