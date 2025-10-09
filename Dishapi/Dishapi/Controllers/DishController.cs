@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Dishapi.Models;
+using Dishapi.Core.Dtos;
+using Dishapi.DAL.Entities;
 using System.Collections.Concurrent;
 using System.Threading;
 
@@ -9,13 +10,13 @@ namespace Dishapi.Controllers
     [Route("api/[controller]")]
     public class DishesController : ControllerBase
     {
-        // Thread-safe storage
+        
         private static readonly ConcurrentDictionary<int, Dish> _dishes;
         private static int _nextId;
 
         static DishesController()
         {
-            // initialize the dictionary with the sample items (using the data you provided)
+            
             var initial = new List<Dish>
             {
                 new Dish {
@@ -144,7 +145,7 @@ namespace Dishapi.Controllers
             _nextId = initial.Any() ? initial.Max(d => d.Id) + 1 : 1;
         }
 
-        private DishDto MapToDto(Dish dish, string language = "ru")
+        private DishDto MapToDto(Dish dish, string? language = "ru")
         {
             var isEnglish = (language ?? "ru").ToLowerInvariant() == "en";
             return new DishDto
@@ -168,7 +169,7 @@ namespace Dishapi.Controllers
             [FromQuery] int pageSize = 5,
             [FromQuery] string? category = null,
             [FromQuery] string? search = null,
-            [FromQuery] string language = "ru")
+            [FromQuery] string? language = "ru")
         {
             try
             {
@@ -199,7 +200,7 @@ namespace Dishapi.Controllers
                 var items = all
                     .Skip((page - 1) * pageSize)
                     .Take(pageSize)
-                    .Select(d => MapToDto(d, language))
+                    .Select(d => MapToDto(d, language ?? "ru"))
                     .ToList();
 
                 var pagination = new Pagination(page, pageSize, totalItems);
@@ -213,7 +214,7 @@ namespace Dishapi.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<DishDto> GetDish(int id, [FromQuery] string language = "ru")
+        public ActionResult<DishDto> GetDish(int id, [FromQuery] string? language = "ru")
         {
             if (_dishes.TryGetValue(id, out var dish))
             {
@@ -257,7 +258,7 @@ namespace Dishapi.Controllers
         }
 
         [HttpGet("categories")]
-        public ActionResult<List<string>> GetCategories([FromQuery] string language = "ru")
+        public ActionResult<List<string>> GetCategories([FromQuery] string? language = "ru")
         {
             var isEnglish = (language ?? "ru").ToLowerInvariant() == "en";
             var categories = _dishes.Values

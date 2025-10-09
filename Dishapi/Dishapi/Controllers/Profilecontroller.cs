@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using Dishapi.Models;
-using Dishapi.Services;
+using Dishapi.Core.Dtos;
+using Dishapi.BLL.Services;
 
 
 namespace Dishapi.Controllers
@@ -59,6 +59,10 @@ namespace Dishapi.Controllers
 
                 return CreatedAtAction(nameof(GetProfile), new { }, profile);
             }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
             catch (UnauthorizedAccessException ex)
             {
                 return Unauthorized(new { message = ex.Message });
@@ -70,36 +74,6 @@ namespace Dishapi.Controllers
             catch (Exception)
             {
                 return StatusCode(500, new { message = "An error occurred while creating the profile." });
-            }
-        }
-
-        [HttpPut]
-        public async Task<ActionResult<ProfileResponseDto>> UpdateProfile([FromBody] ProfileUpdateDto profileDto)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            try
-            {
-                var userId = GetCurrentUserId();
-                var updatedProfile = await _profileService.UpdateProfileAsync(userId, profileDto);
-
-                if (updatedProfile == null)
-                {
-                    return NotFound(new { message = "Profile not found." });
-                }
-
-                return Ok(updatedProfile);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Unauthorized(new { message = ex.Message });
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, new { message = "An error occurred while updating the profile." });
             }
         }
 
@@ -117,6 +91,10 @@ namespace Dishapi.Controllers
                 }
 
                 return NoContent();
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
             }
             catch (UnauthorizedAccessException ex)
             {
@@ -137,6 +115,10 @@ namespace Dishapi.Controllers
                 var exists = await _profileService.ProfileExistsAsync(userId);
 
                 return Ok(new { exists = exists });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
             }
             catch (UnauthorizedAccessException ex)
             {

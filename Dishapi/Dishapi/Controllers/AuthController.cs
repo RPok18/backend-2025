@@ -1,5 +1,5 @@
-﻿using Dishapi.Models;
-using Dishapi.Services;
+﻿using Dishapi.Core.Dtos;
+using Dishapi.BLL.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dishapi.Controllers

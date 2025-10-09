@@ -3,21 +3,27 @@ using Dishapi.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.Extensions.Configuration;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 
 namespace Dishapi.Services
 {
     public class AuthService : IAuthService
     {
         private readonly AppDbContext _context;
+        private readonly IConfiguration _configuration;
 
-        public AuthService(AppDbContext context)
+        public AuthService(AppDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         public async Task<AuthResponseDto> RegisterAsync(RegisterDto dto)
         {
-            // Check if user already exists
+            
             if (await UserExistsAsync(dto.Email))
             {
                 throw new InvalidOperationException("User with this email already exists");
@@ -61,7 +67,8 @@ namespace Dishapi.Services
                     BirthDate = profile.BirthDate,
                     Address = profile.Address,
                     Phone = profile.Phone
-                }
+                },
+                Token = GenerateJwtToken(user)
             };
         }
 
@@ -88,7 +95,8 @@ namespace Dishapi.Services
                     BirthDate = user.Profile.BirthDate,
                     Address = user.Profile.Address,
                     Phone = user.Profile.Phone
-                }
+                },
+                Token = GenerateJwtToken(user)
             };
         }
 
@@ -108,6 +116,34 @@ namespace Dishapi.Services
         {
             var hashOfInput = HashPassword(password);
             return hashOfInput == hash;
+        }
+
+        private string GenerateJwtToken(User user)
+        {
+            var jwtSection = _configuration.GetSection("Jwt");
+            var key = jwtSection.GetValue<string>("Key")!;
+            var issuer = jwtSection.GetValue<string>("Issuer");
+            var audience = jwtSection.GetValue<string>("Audience");
+
+            var claims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email)
+            };
+
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: issuer,
+                audience: audience,
+                claims: claims,
+                expires: DateTime.UtcNow.AddHours(12),
+                signingCredentials: credentials
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }
