@@ -10,7 +10,7 @@ namespace Dishapi.BLL.Services
         Task<ProfileResponseDto?> UpdateProfileAsync(string userId, ProfileUpdateDto dto);
         Task<bool> DeleteProfileAsync(string userId);
         Task<bool> ProfileExistsAsync(string userId);
-        Task<Profile> GetProfileAsync(string userId);
+        Task<Dishapi.DAL.Entities.Profile> GetProfileAsync(string userId);
     }
 }
 

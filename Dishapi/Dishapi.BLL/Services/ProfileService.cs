@@ -2,19 +2,22 @@ using Dishapi.Core.Dtos;
 using Dishapi.DAL;
 using Dishapi.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 namespace Dishapi.BLL.Services
 {
     public class ProfileService : IProfileService
     {
         private readonly AppDbContext _context;
+        private readonly IMapper _mapper;
 
-        public ProfileService(AppDbContext context)
+        public ProfileService(AppDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        public async Task<Profile> GetProfileAsync(string userId)
+        public async Task<Dishapi.DAL.Entities.Profile> GetProfileAsync(string userId)
         {
             if (!int.TryParse(userId, out var userIdInt))
                 throw new ArgumentException("Invalid user id");
@@ -34,7 +37,7 @@ namespace Dishapi.BLL.Services
             var profile = await _context.Profiles
                 .FirstOrDefaultAsync(p => p.UserId == userIdInt);
 
-            return profile == null ? null : MapToResponseDto(profile);
+            return profile == null ? null : _mapper.Map<ProfileResponseDto>(profile);
         }
 
         public async Task<ProfileResponseDto> CreateProfileAsync(string userId, ProfileCreateDto dto)
@@ -48,21 +51,14 @@ namespace Dishapi.BLL.Services
                 throw new InvalidOperationException("Profile already exists for this user.");
             }
 
-            var profile = new Profile
-            {
-                UserId = userIdInt,
-                FirstName = dto.FirstName,
-                LastName = dto.LastName,
-                FullName = dto.FullName,
-                Address = dto.Address ?? string.Empty,
-                Phone = dto.Phone ?? string.Empty,
-                CreatedAt = DateTime.UtcNow
-            };
+            var profile = _mapper.Map<Dishapi.DAL.Entities.Profile>(dto);
+            profile.UserId = userIdInt;
+            profile.CreatedAt = DateTime.UtcNow;
 
             _context.Profiles.Add(profile);
             await _context.SaveChangesAsync();
 
-            return MapToResponseDto(profile);
+            return _mapper.Map<ProfileResponseDto>(profile);
         }
 
         public async Task<ProfileResponseDto?> UpdateProfileAsync(string id, ProfileUpdateDto dto)
@@ -72,23 +68,10 @@ namespace Dishapi.BLL.Services
             var profile = await _context.Profiles.FirstOrDefaultAsync(p => p.UserId == userIdInt);
             if (profile == null) return null;
 
-            if (dto.FullName != null)
-                profile.FullName = dto.FullName;
-
-            if (dto.Bio != null)
-                profile.Bio = dto.Bio;
-
-            if (dto.BirthDate.HasValue)
-                profile.BirthDate = dto.BirthDate.Value;
-
-            if (dto.Address != null)
-                profile.Address = dto.Address;
-
-            if (dto.Phone != null)
-                profile.Phone = dto.Phone;
+            _mapper.Map(dto, profile);
 
             await _context.SaveChangesAsync();
-            return MapToResponseDto(profile);
+            return _mapper.Map<ProfileResponseDto>(profile);
         }
 
         public async Task<bool> DeleteProfileAsync(string id)
@@ -110,19 +93,7 @@ namespace Dishapi.BLL.Services
             return await _context.Profiles.AnyAsync(p => p.UserId == userIdInt);
         }
 
-        private ProfileResponseDto MapToResponseDto(Profile profile)
-        {
-            return new ProfileResponseDto
-            {
-                Id = profile.Id.ToString(),
-                UserId = profile.UserId.ToString(),
-                FullName = profile.FullName,
-                Bio = profile.Bio,
-                BirthDate = profile.BirthDate,
-                Address = profile.Address,
-                Phone = profile.Phone
-            };
-        }
+        
     }
 }
 
