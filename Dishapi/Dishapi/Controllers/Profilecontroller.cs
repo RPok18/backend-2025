@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Dishapi.BLL.Services;
 using Dishapi.Core.Dtos;
-using Dishapi.Core.Models;
+// removed invalid namespace reference
 using Dishapi.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 using DalDish = Dishapi.DAL.Entities.Dish;
 using WebDish = Dishapi.Models.Dish;

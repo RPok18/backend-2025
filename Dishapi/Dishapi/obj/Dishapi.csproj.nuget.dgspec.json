@@ -1,43 +1,36 @@
 {
   "format": 1,
   "restore": {
-    "E:\\Backend\\Dishapi\\Dishapi\\Dishapi.csproj": {}
+    "/workspace/Dishapi/Dishapi/Dishapi.csproj": {}
   },
   "projects": {
-    "E:\\Backend\\Dishapi\\Dishapi.BLL\\Dishapi.BLL.csproj": {
+    "/workspace/Dishapi/Dishapi.BLL/Dishapi.BLL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Backend\\Dishapi\\Dishapi.BLL\\Dishapi.BLL.csproj",
+        "projectUniqueName": "/workspace/Dishapi/Dishapi.BLL/Dishapi.BLL.csproj",
         "projectName": "Dishapi.BLL",
-        "projectPath": "E:\\Backend\\Dishapi\\Dishapi.BLL\\Dishapi.BLL.csproj",
-        "packagesPath": "C:\\Users\\pokhr\\.nuget\\packages\\",
-        "outputPath": "E:\\Backend\\Dishapi\\Dishapi.BLL\\obj\\",
+        "projectPath": "/workspace/Dishapi/Dishapi.BLL/Dishapi.BLL.csproj",
+        "packagesPath": "/home/ubuntu/.nuget/packages/",
+        "outputPath": "/workspace/Dishapi/Dishapi.BLL/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\pokhr\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/ubuntu/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "E:\\Backend\\Dishapi\\Dishapi.Core\\Dishapi.Core.csproj": {
-                "projectPath": "E:\\Backend\\Dishapi\\Dishapi.Core\\Dishapi.Core.csproj"
+              "/workspace/Dishapi/Dishapi.Core/Dishapi.Core.csproj": {
+                "projectPath": "/workspace/Dishapi/Dishapi.Core/Dishapi.Core.csproj"
               },
-              "E:\\Backend\\Dishapi\\Dishapi.DAL\\Dishapi.DAL.csproj": {
-                "projectPath": "E:\\Backend\\Dishapi\\Dishapi.DAL\\Dishapi.DAL.csproj"
+              "/workspace/Dishapi/Dishapi.DAL/Dishapi.DAL.csproj": {
+                "projectPath": "/workspace/Dishapi/Dishapi.DAL/Dishapi.DAL.csproj"
               }
             }
           }
@@ -63,7 +56,7 @@
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[9.0.9, )"
+              "version": "[8.0.10, )"
             },
             "Microsoft.IdentityModel.Tokens": {
               "target": "Package",
@@ -93,33 +86,26 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.415/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/workspace/.dotnet/sdk/8.0.415/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "E:\\Backend\\Dishapi\\Dishapi.Core\\Dishapi.Core.csproj": {
+    "/workspace/Dishapi/Dishapi.Core/Dishapi.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Backend\\Dishapi\\Dishapi.Core\\Dishapi.Core.csproj",
+        "projectUniqueName": "/workspace/Dishapi/Dishapi.Core/Dishapi.Core.csproj",
         "projectName": "Dishapi.Core",
-        "projectPath": "E:\\Backend\\Dishapi\\Dishapi.Core\\Dishapi.Core.csproj",
-        "packagesPath": "C:\\Users\\pokhr\\.nuget\\packages\\",
-        "outputPath": "E:\\Backend\\Dishapi\\Dishapi.Core\\obj\\",
+        "projectPath": "/workspace/Dishapi/Dishapi.Core/Dishapi.Core.csproj",
+        "packagesPath": "/home/ubuntu/.nuget/packages/",
+        "outputPath": "/workspace/Dishapi/Dishapi.Core/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\pokhr\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/ubuntu/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -161,33 +147,26 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.415/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/workspace/.dotnet/sdk/8.0.415/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "E:\\Backend\\Dishapi\\Dishapi.DAL\\Dishapi.DAL.csproj": {
+    "/workspace/Dishapi/Dishapi.DAL/Dishapi.DAL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Backend\\Dishapi\\Dishapi.DAL\\Dishapi.DAL.csproj",
+        "projectUniqueName": "/workspace/Dishapi/Dishapi.DAL/Dishapi.DAL.csproj",
         "projectName": "Dishapi.DAL",
-        "projectPath": "E:\\Backend\\Dishapi\\Dishapi.DAL\\Dishapi.DAL.csproj",
-        "packagesPath": "C:\\Users\\pokhr\\.nuget\\packages\\",
-        "outputPath": "E:\\Backend\\Dishapi\\Dishapi.DAL\\obj\\",
+        "projectPath": "/workspace/Dishapi/Dishapi.DAL/Dishapi.DAL.csproj",
+        "packagesPath": "/home/ubuntu/.nuget/packages/",
+        "outputPath": "/workspace/Dishapi/Dishapi.DAL/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\pokhr\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/ubuntu/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -213,11 +192,11 @@
           "dependencies": {
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[9.0.9, )"
+              "version": "[8.0.10, )"
             },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
-              "version": "[9.0.9, )"
+              "version": "[8.0.10, )"
             }
           },
           "imports": [
@@ -236,47 +215,40 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.415/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/workspace/.dotnet/sdk/8.0.415/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "E:\\Backend\\Dishapi\\Dishapi\\Dishapi.csproj": {
+    "/workspace/Dishapi/Dishapi/Dishapi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Backend\\Dishapi\\Dishapi\\Dishapi.csproj",
+        "projectUniqueName": "/workspace/Dishapi/Dishapi/Dishapi.csproj",
         "projectName": "Dishapi",
-        "projectPath": "E:\\Backend\\Dishapi\\Dishapi\\Dishapi.csproj",
-        "packagesPath": "C:\\Users\\pokhr\\.nuget\\packages\\",
-        "outputPath": "E:\\Backend\\Dishapi\\Dishapi\\obj\\",
+        "projectPath": "/workspace/Dishapi/Dishapi/Dishapi.csproj",
+        "packagesPath": "/home/ubuntu/.nuget/packages/",
+        "outputPath": "/workspace/Dishapi/Dishapi/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\pokhr\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/ubuntu/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "E:\\Backend\\Dishapi\\Dishapi.BLL\\Dishapi.BLL.csproj": {
-                "projectPath": "E:\\Backend\\Dishapi\\Dishapi.BLL\\Dishapi.BLL.csproj"
+              "/workspace/Dishapi/Dishapi.BLL/Dishapi.BLL.csproj": {
+                "projectPath": "/workspace/Dishapi/Dishapi.BLL/Dishapi.BLL.csproj"
               },
-              "E:\\Backend\\Dishapi\\Dishapi.Core\\Dishapi.Core.csproj": {
-                "projectPath": "E:\\Backend\\Dishapi\\Dishapi.Core\\Dishapi.Core.csproj"
+              "/workspace/Dishapi/Dishapi.Core/Dishapi.Core.csproj": {
+                "projectPath": "/workspace/Dishapi/Dishapi.Core/Dishapi.Core.csproj"
               },
-              "E:\\Backend\\Dishapi\\Dishapi.DAL\\Dishapi.DAL.csproj": {
-                "projectPath": "E:\\Backend\\Dishapi\\Dishapi.DAL\\Dishapi.DAL.csproj"
+              "/workspace/Dishapi/Dishapi.DAL/Dishapi.DAL.csproj": {
+                "projectPath": "/workspace/Dishapi/Dishapi.DAL/Dishapi.DAL.csproj"
               }
             }
           }
@@ -306,23 +278,23 @@
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[9.0.9, )"
+              "version": "[8.0.10, )"
             },
             "Microsoft.EntityFrameworkCore.Design": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[9.0.9, )"
+              "version": "[8.0.10, )"
             },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
-              "version": "[9.0.9, )"
+              "version": "[8.0.10, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[9.0.9, )"
+              "version": "[8.0.10, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
@@ -348,7 +320,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.415/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/workspace/.dotnet/sdk/8.0.415/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

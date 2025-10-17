@@ -66,10 +66,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IDishService, DishService>();
-builder.Services.AddAutoMapper(typeof(ProfileMappingProfile).Assembly);
-
-
-builder.Services.AddAutoMapper(typeof(ProfileMappingProfile).Assembly);
+builder.Services.AddAutoMapper(typeof(DishMappingProfile).Assembly);
 
 builder.Services.AddCors(options =>
 {
