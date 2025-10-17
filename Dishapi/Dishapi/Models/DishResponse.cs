@@ -1,18 +1,17 @@
-﻿using Dishapi.Core.Dtos;
-using Dishapi.Core.Models;
+using Dishapi.Core.Dtos;
 
 namespace Dishapi.Models
 {
     public class DishResponse
     {
         public List<DishDto>? Dishes { get; set; }
-        public WebPagination? Pagination { get; set; }
+        public Pagination? Pagination { get; set; }
         public string? Error { get; set; }
         public bool Success => string.IsNullOrEmpty(Error);
 
         public DishResponse() { }
 
-        public DishResponse(List<DishDto> dishes, WebPagination pagination)
+        public DishResponse(List<DishDto> dishes, Pagination pagination)
         {
             Dishes = dishes;
             Pagination = pagination;
@@ -24,21 +23,5 @@ namespace Dishapi.Models
         }
     }
 
-   
-    public class WebPagination
-    {
-        public int Page { get; set; }
-        public int PageSize { get; set; }
-        public int TotalItems { get; set; }
-        public int TotalPages => (int)Math.Ceiling((double)TotalItems / PageSize);
-
-        public WebPagination() { }
-
-        public WebPagination(int page, int pageSize, int totalItems)
-        {
-            Page = page;
-            PageSize = pageSize;
-            TotalItems = totalItems;
-        }
-    }
+    
 }

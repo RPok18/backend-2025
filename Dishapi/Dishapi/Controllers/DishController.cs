@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Concurrent;
 using Dishapi.BLL.Services;
 using Dishapi.Core.Dtos;
-using Dishapi.Core.Models;
 using Dishapi.Models;
 
 
@@ -206,7 +205,7 @@ namespace Dishapi.Controllers
                     .Select(d => MapToDto(d, language ?? "ru"))
                     .ToList();
 
-                var pagination = new Pagination(page, pageSize, totalItems);
+                var pagination = new Dishapi.Models.Pagination(page, pageSize, totalItems);
                 var response = new DishResponse(items, pagination);
                 return Ok(response);
             }
