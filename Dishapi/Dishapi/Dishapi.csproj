@@ -25,7 +25,8 @@
 		<Compile Remove="Data\**\*.cs" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\Dishapi.BLL\Dishapi.BLL.csproj" />
 		<ProjectReference Include="..\Dishapi.Core\Dishapi.Core.csproj" />
+		<ProjectReference Include="..\Dishapi.BLL\Dishapi.BLL.csproj" />
+		<ProjectReference Include="..\Dishapi.DAL\Dishapi.DAL.csproj" />
 	</ItemGroup>
 </Project>

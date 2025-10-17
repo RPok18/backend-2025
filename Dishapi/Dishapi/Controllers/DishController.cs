@@ -1,8 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Dishapi.Core.Dtos;
-using Dishapi.DAL.Entities;
 using System.Collections.Concurrent;
-using System.Threading;
+using Dishapi.BLL.Services;
+using Dishapi.Core.Dtos;
+using Dishapi.Core.Models;
+using Dishapi.Models;
+
+
+using DalDish = Dishapi.DAL.Entities.Dish;
+using WebDish = Dishapi.Models.Dish;
 
 namespace Dishapi.Controllers
 {
@@ -10,16 +15,14 @@ namespace Dishapi.Controllers
     [Route("api/[controller]")]
     public class DishesController : ControllerBase
     {
-        
-        private static readonly ConcurrentDictionary<int, Dish> _dishes;
+        private static readonly ConcurrentDictionary<int, WebDish> _dishes;
         private static int _nextId;
 
         static DishesController()
         {
-            
-            var initial = new List<Dish>
+            var initial = new List<WebDish>
             {
-                new Dish {
+                new WebDish {
                     Id = 1,
                     Name = "4 сыра",
                     NameEn = "4 Cheese Pizza",
@@ -31,10 +34,10 @@ namespace Dishapi.Controllers
                     ImageUrl = "https://mistertako.ru/uploads/products/778887e-8327-11ec-8575-005059dbef0..",
                     IsAvailable = true,
                     Vegetarian = true,
-                    Rating = 6.50426849970817,
+                    Rating = 6.5,
                     CreatedAt = DateTime.UtcNow
                 },
-                new Dish {
+                new WebDish {
                     Id = 2,
                     Name = "Party BBQ",
                     NameEn = "Party BBQ Pizza",
@@ -46,10 +49,10 @@ namespace Dishapi.Controllers
                     ImageUrl = "https://mistertako.ru/uploads/products/659ab866-85ec-11ea-a9ab-005059dbef0..",
                     IsAvailable = false,
                     Vegetarian = false,
-                    Rating = 5.847521865882921,
+                    Rating = 5.8,
                     CreatedAt = DateTime.UtcNow
                 },
-                new Dish {
+                new WebDish {
                     Id = 3,
                     Name = "Вок а-ля Диабло",
                     NameEn = "Wok a-la Diablo",
@@ -61,15 +64,15 @@ namespace Dishapi.Controllers
                     ImageUrl = "https://mistertako.ru/uploads/products/663ab868-85ec-11ea-a9ab-86b1f8341741.jpg",
                     IsAvailable = false,
                     Vegetarian = false,
-                    Rating = 3.2222222222222223,
+                    Rating = 3.2,
                     CreatedAt = DateTime.UtcNow
                 },
-                new Dish {
+                new WebDish {
                     Id = 4,
                     Name = "Вок болоньезе",
                     NameEn = "Wok Bolognese",
-                    Description = "Пшеничная лапша обжаренная на воке с фаршем (говядина/свинина) и овощами (шампиньоны, перец сладкий, лук красный)",
-                    DescriptionEn = "Wheat noodles stir-fried in a wok with minced meat (beef/pork) and vegetables (mushrooms, bell pepper, red onion)",
+                    Description = "Пшеничная лапша с фаршем и овощами",
+                    DescriptionEn = "Wheat noodles with minced meat and vegetables",
                     Price = 280.00m,
                     Category = "Вок",
                     CategoryEn = "Wok",
@@ -79,12 +82,12 @@ namespace Dishapi.Controllers
                     Rating = 9.0,
                     CreatedAt = DateTime.UtcNow
                 },
-                new Dish {
+                new WebDish {
                     Id = 5,
                     Name = "Том Ям",
                     NameEn = "Tom Yum",
-                    Description = "Лапша пшеничная, куриное филе, шампиньоны, лук красный, запрака Том Ям (паста Том Ям, паста Том Кха, сахар, соевый соус), сливки, соевый соус, помидор, перец чили",
-                    DescriptionEn = "Wheat noodles, chicken fillet, mushrooms, red onion, Tom Yum paste (Tom Yum paste, Tom Kha paste, sugar, soy sauce), cream, soy sauce, tomato, chili pepper",
+                    Description = "Лапша пшеничная, куриное филе, шампиньоны, соус Том Ям",
+                    DescriptionEn = "Wheat noodles, chicken fillet, mushrooms, Tom Yum sauce",
                     Price = 280.00m,
                     Category = "Вок",
                     CategoryEn = "Wok",
@@ -94,7 +97,7 @@ namespace Dishapi.Controllers
                     Rating = 9.0,
                     CreatedAt = DateTime.UtcNow
                 },
-                new Dish {
+                new WebDish {
                     Id = 6,
                     Name = "Цезарь с курицей",
                     NameEn = "Caesar Salad with Chicken",
@@ -109,7 +112,7 @@ namespace Dishapi.Controllers
                     Rating = 4.5,
                     CreatedAt = DateTime.UtcNow
                 },
-                new Dish {
+                new WebDish {
                     Id = 7,
                     Name = "Греческий салат",
                     NameEn = "Greek Salad",
@@ -124,7 +127,7 @@ namespace Dishapi.Controllers
                     Rating = 4.2,
                     CreatedAt = DateTime.UtcNow
                 },
-                new Dish {
+                new WebDish {
                     Id = 8,
                     Name = "Тирамису",
                     NameEn = "Tiramisu",
@@ -141,11 +144,11 @@ namespace Dishapi.Controllers
                 }
             };
 
-            _dishes = new ConcurrentDictionary<int, Dish>(initial.ToDictionary(d => d.Id, d => d));
+            _dishes = new ConcurrentDictionary<int, WebDish>(initial.ToDictionary(d => d.Id, d => d));
             _nextId = initial.Any() ? initial.Max(d => d.Id) + 1 : 1;
         }
 
-        private DishDto MapToDto(Dish dish, string? language = "ru")
+        private DishDto MapToDto(WebDish dish, string? language = "ru")
         {
             var isEnglish = (language ?? "ru").ToLowerInvariant() == "en";
             return new DishDto
@@ -224,25 +227,20 @@ namespace Dishapi.Controllers
         }
 
         [HttpPost]
-        public ActionResult<DishDto> CreateDish([FromBody] Dish dish)
+        public ActionResult<DishDto> CreateDish([FromBody] WebDish dish)
         {
             if (dish == null)
                 return BadRequest(new { message = "Invalid dish data" });
 
-            // basic validation
             if (string.IsNullOrWhiteSpace(dish.Name) || dish.Price <= 0)
                 return BadRequest(new { message = "Name and positive Price are required." });
 
-            // assign id and created date in a thread-safe manner
             var id = Interlocked.Increment(ref _nextId);
             dish.Id = id;
             dish.CreatedAt = DateTime.UtcNow;
 
             if (!_dishes.TryAdd(dish.Id, dish))
-            {
-                // fallback if concurrent insert fails for some reason
                 return StatusCode(500, new { message = "Could not add dish due to concurrency issue." });
-            }
 
             var dto = MapToDto(dish);
             return CreatedAtAction(nameof(GetDish), new { id = dish.Id }, dto);

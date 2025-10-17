@@ -13,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
-// Configure Swagger with JWT Bearer authentication
+
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
@@ -23,7 +23,7 @@ builder.Services.AddSwaggerGen(options =>
         Description = "API for managing dishes and profiles"
     });
 
-    // Define the Bearer token security scheme
+    
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -34,7 +34,7 @@ builder.Services.AddSwaggerGen(options =>
         Description = "Enter your JWT token in the text input below.\n\nExample: \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\""
     });
 
-    // Apply the security scheme globally to all operations
+    
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -51,7 +51,7 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-// Add EnableRetryOnFailure to handle transient database errors
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection"),
@@ -65,8 +65,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IDishService, DishService>();
+builder.Services.AddAutoMapper(typeof(ProfileMappingProfile).Assembly);
 
-// AutoMapper: scan BLL assembly for profiles
+
 builder.Services.AddAutoMapper(typeof(ProfileMappingProfile).Assembly);
 
 builder.Services.AddCors(options =>
