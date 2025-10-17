@@ -1,24 +1,20 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Concurrent;
 using Dishapi.BLL.Services;
 using Dishapi.Core.Dtos;
-using Dishapi.Core.Models;
 using Dishapi.Models;
-
-
-using DalDish = Dishapi.DAL.Entities.Dish;
 using WebDish = Dishapi.Models.Dish;
 
 namespace Dishapi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
-    public class DishesController : ControllerBase
+    [Route("api/dish")]
+    public class DishController : ControllerBase
     {
         private static readonly ConcurrentDictionary<int, WebDish> _dishes;
         private static int _nextId;
 
-        static DishesController()
+        static DishController()
         {
             var initial = new List<WebDish>
             {
