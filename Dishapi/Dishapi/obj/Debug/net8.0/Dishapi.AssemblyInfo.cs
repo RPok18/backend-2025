@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Dishapi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+328b6d18dd5822062c6f92c5f9238423c0f57829")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0f8abc5c56b59f89c7bdfd6626964e74060fe619")]
 [assembly: System.Reflection.AssemblyProductAttribute("Dishapi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Dishapi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -5098,11 +5098,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\Backend\\Dishapi\\Dishapi\\Dishapi.csproj",
+      "projectUniqueName": "E:\\backend\\Dishapi\\Dishapi\\Dishapi.csproj",
       "projectName": "Dishapi",
-      "projectPath": "E:\\Backend\\Dishapi\\Dishapi\\Dishapi.csproj",
+      "projectPath": "E:\\backend\\Dishapi\\Dishapi\\Dishapi.csproj",
       "packagesPath": "C:\\Users\\pokhr\\.nuget\\packages\\",
-      "outputPath": "E:\\Backend\\Dishapi\\Dishapi\\obj\\",
+      "outputPath": "E:\\backend\\Dishapi\\Dishapi\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -5124,14 +5124,14 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "E:\\Backend\\Dishapi\\Dishapi.BLL\\Dishapi.BLL.csproj": {
-              "projectPath": "E:\\Backend\\Dishapi\\Dishapi.BLL\\Dishapi.BLL.csproj"
+            "E:\\backend\\Dishapi\\Dishapi.BLL\\Dishapi.BLL.csproj": {
+              "projectPath": "E:\\backend\\Dishapi\\Dishapi.BLL\\Dishapi.BLL.csproj"
             },
-            "E:\\Backend\\Dishapi\\Dishapi.Core\\Dishapi.Core.csproj": {
-              "projectPath": "E:\\Backend\\Dishapi\\Dishapi.Core\\Dishapi.Core.csproj"
+            "E:\\backend\\Dishapi\\Dishapi.Core\\Dishapi.Core.csproj": {
+              "projectPath": "E:\\backend\\Dishapi\\Dishapi.Core\\Dishapi.Core.csproj"
             },
-            "E:\\Backend\\Dishapi\\Dishapi.DAL\\Dishapi.DAL.csproj": {
-              "projectPath": "E:\\Backend\\Dishapi\\Dishapi.DAL\\Dishapi.DAL.csproj"
+            "E:\\backend\\Dishapi\\Dishapi.DAL\\Dishapi.DAL.csproj": {
+              "projectPath": "E:\\backend\\Dishapi\\Dishapi.DAL\\Dishapi.DAL.csproj"
             }
           }
         }

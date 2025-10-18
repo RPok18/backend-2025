@@ -1,12 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Dishapi.BLL.Services;
 using Dishapi.Core.Dtos;
-using Dishapi.Core.Models;
-using Dishapi.Models;
-
-using DalDish = Dishapi.DAL.Entities.Dish;
-using WebDish = Dishapi.Models.Dish;
-
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Dishapi.Controllers
 {
@@ -22,7 +18,7 @@ namespace Dishapi.Controllers
             _profileService = profileService;
         }
 
-        [HttpGet]
+        [HttpGet("me")]
         public async Task<ActionResult<ProfileResponseDto>> GetProfile()
         {
             try
@@ -80,6 +76,39 @@ namespace Dishapi.Controllers
             }
         }
 
+        [HttpPut]
+        public async Task<ActionResult<ProfileResponseDto>> UpdateProfile([FromBody] ProfileUpdateDto profileDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                var userId = GetCurrentUserId();
+                var profile = await _profileService.UpdateProfileAsync(userId, profileDto);
+
+                return Ok(profile);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(new { message = ex.Message });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { message = "An error occurred while updating the profile." });
+            }
+        }
+
         [HttpDelete]
         public async Task<IActionResult> DeleteProfile()
         {
@@ -106,30 +135,6 @@ namespace Dishapi.Controllers
             catch (Exception)
             {
                 return StatusCode(500, new { message = "An error occurred while deleting the profile." });
-            }
-        }
-
-        [HttpGet("exists")]
-        public async Task<ActionResult<object>> ProfileExists()
-        {
-            try
-            {
-                var userId = GetCurrentUserId();
-                var exists = await _profileService.ProfileExistsAsync(userId);
-
-                return Ok(new { exists = exists });
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Unauthorized(new { message = ex.Message });
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, new { message = "An error occurred while checking profile existence." });
             }
         }
 

@@ -41,11 +41,11 @@ namespace Dishapi.BLL.Services
 
             var profile = new Profile
             {
-                UserId = user.Id,
+                // Profile.UserId is string in your entity
+                UserId = user.Id.ToString(),
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
-                FullName = $"{dto.FirstName} {dto.LastName}",
-                Phone = dto.Phone ?? string.Empty,
+                PhoneNumber = dto.Phone ?? string.Empty,
                 Address = dto.Address ?? string.Empty,
                 CreatedAt = DateTime.UtcNow
             };
@@ -57,15 +57,7 @@ namespace Dishapi.BLL.Services
             {
                 UserId = user.Id,
                 Email = user.Email,
-                Profile = new ProfileResponseDto
-                {
-                    Id = profile.Id.ToString(),
-                    FullName = profile.FullName,
-                    Bio = profile.Bio,
-                    BirthDate = profile.BirthDate,
-                    Address = profile.Address,
-                    Phone = profile.Phone
-                },
+                Profile = MapProfileToDto(profile),
                 Token = GenerateJwtToken(user)
             };
         }
@@ -85,15 +77,7 @@ namespace Dishapi.BLL.Services
             {
                 UserId = user.Id,
                 Email = user.Email,
-                Profile = new ProfileResponseDto
-                {
-                    Id = user.Profile!.Id.ToString(),
-                    FullName = user.Profile.FullName,
-                    Bio = user.Profile.Bio,
-                    BirthDate = user.Profile.BirthDate,
-                    Address = user.Profile.Address,
-                    Phone = user.Profile.Phone
-                },
+                Profile = user.Profile is not null ? MapProfileToDto(user.Profile) : new ProfileResponseDto(),
                 Token = GenerateJwtToken(user)
             };
         }
@@ -143,6 +127,26 @@ namespace Dishapi.BLL.Services
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+        // Mapping helper: maps entity Profile -> ProfileResponseDto
+        private ProfileResponseDto MapProfileToDto(Profile profile)
+        {
+            if (profile == null) return new ProfileResponseDto();
+
+            return new ProfileResponseDto
+            {
+                Id = profile.Id,
+                UserId = profile.UserId,
+                FirstName = profile.FirstName,
+                LastName = profile.LastName,
+                PhoneNumber = profile.PhoneNumber,
+                Address = profile.Address,
+                City = profile.City,
+                Country = profile.Country,
+                PostalCode = profile.PostalCode,
+                CreatedAt = profile.CreatedAt,
+                UpdatedAt = profile.UpdatedAt
+            };
+        }
     }
 }
-

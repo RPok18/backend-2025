@@ -11,24 +11,51 @@ namespace Dishapi.DAL
 
         public DbSet<Dish> Dishes { get; set; }
         public DbSet<Profile> Profiles { get; set; }
+        public DbSet<Rating> Ratings { get; set; }
+
+        
         public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<User>()
-                .HasOne(u => u.Profile)
-                .WithOne(p => p.User)
-                .HasForeignKey<Profile>(p => p.UserId);
+            // Configure Dish
+            modelBuilder.Entity<Dish>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Price).HasColumnType("decimal(18,2)");
+                entity.HasIndex(e => e.Category);
+                entity.HasIndex(e => e.IsAvailable);
+            });
 
+            // Configure Profile
             modelBuilder.Entity<Profile>(entity =>
             {
                 entity.HasKey(e => e.Id);
                 entity.HasIndex(e => e.UserId).IsUnique();
-                entity.Property(e => e.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
+            });
+
+            // Configure Rating
+            modelBuilder.Entity<Rating>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasIndex(e => new { e.DishId, e.UserId }).IsUnique();
+
+                entity.HasOne(e => e.Dish)
+                    .WithMany(d => d.Ratings)
+                    .HasForeignKey(e => e.DishId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // Configure User
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasIndex(e => e.Email).IsUnique();
+                entity.Property(e => e.Email).HasMaxLength(256).IsRequired();
+                entity.Property(e => e.PasswordHash).HasMaxLength(512);
             });
         }
     }
 }
-

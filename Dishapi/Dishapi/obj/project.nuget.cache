@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "9zzgoVBfM74=",
+  "dgSpecHash": "l7pCkEFHpFw=",
   "success": true,
-  "projectFilePath": "E:\\Backend\\Dishapi\\Dishapi\\Dishapi.csproj",
+  "projectFilePath": "E:\\backend\\Dishapi\\Dishapi\\Dishapi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\pokhr\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\pokhr\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",

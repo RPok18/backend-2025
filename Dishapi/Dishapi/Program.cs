@@ -12,8 +12,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-
-
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
@@ -23,7 +21,6 @@ builder.Services.AddSwaggerGen(options =>
         Description = "API for managing dishes and profiles"
     });
 
-    
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -34,7 +31,6 @@ builder.Services.AddSwaggerGen(options =>
         Description = "Enter your JWT token in the text input below.\n\nExample: \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\""
     });
 
-    
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -51,7 +47,6 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection"),
@@ -63,13 +58,15 @@ builder.Services.AddDbContext<AppDbContext>(options =>
                 errorNumbersToAdd: null);
         }));
 
+// existing registrations (keep yours)...
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IDishService, DishService>();
-builder.Services.AddAutoMapper(typeof(ProfileMappingProfile).Assembly);
 
+// register rating service
+builder.Services.AddScoped<IRatingService, RatingService>();
 
-builder.Services.AddAutoMapper(typeof(ProfileMappingProfile).Assembly);
+builder.Services.AddAutoMapper(typeof(DishMappingProfile).Assembly);
 
 builder.Services.AddCors(options =>
 {
@@ -110,15 +107,12 @@ var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
+
 app.UseCors("AllowAll");
+
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapControllers();
 
-app.MapGet("/", () => Results.Json(new
-{
-    message = "API is running",
-    endpoints = new[] { "/api/auth/register", "/api/auth/login", "/api/profile", "/api/dish", "/swagger" }
-}));
+app.MapControllers();
 
 app.Run();

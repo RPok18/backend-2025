@@ -2,98 +2,128 @@ using Dishapi.Core.Dtos;
 using Dishapi.DAL;
 using Dishapi.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
-using AutoMapper;
 
 namespace Dishapi.BLL.Services
 {
     public class ProfileService : IProfileService
     {
         private readonly AppDbContext _context;
-        private readonly IMapper _mapper;
 
-        public ProfileService(AppDbContext context, IMapper mapper)
+        public ProfileService(AppDbContext context)
         {
             _context = context;
-            _mapper = mapper;
-        }
-
-        public async Task<Dishapi.DAL.Entities.Profile> GetProfileAsync(string userId)
-        {
-            if (!int.TryParse(userId, out var userIdInt))
-                throw new ArgumentException("Invalid user id");
-            var profile = await _context.Profiles
-                .FirstOrDefaultAsync(p => p.UserId == userIdInt);
-
-            if (profile == null)
-                throw new KeyNotFoundException($"Profile not found for user {userId}");
-
-            return profile;
         }
 
         public async Task<ProfileResponseDto?> GetProfileByUserIdAsync(string userId)
         {
-            if (!int.TryParse(userId, out var userIdInt))
-                throw new ArgumentException("Invalid user id");
-            var profile = await _context.Profiles
-                .FirstOrDefaultAsync(p => p.UserId == userIdInt);
+            if (string.IsNullOrEmpty(userId))
+                throw new ArgumentException("User ID is required");
 
-            return profile == null ? null : _mapper.Map<ProfileResponseDto>(profile);
+            var profile = await _context.Profiles
+                .FirstOrDefaultAsync(p => p.UserId == userId);
+
+            if (profile == null)
+                return null;
+
+            return MapToResponseDto(profile);
         }
 
-        public async Task<ProfileResponseDto> CreateProfileAsync(string userId, ProfileCreateDto dto)
+        public async Task<ProfileResponseDto> CreateProfileAsync(string userId, ProfileCreateDto profileDto)
         {
-            if (!int.TryParse(userId, out var userIdInt))
-                throw new ArgumentException("Invalid user id");
+            if (string.IsNullOrEmpty(userId))
+                throw new ArgumentException("User ID is required");
 
-            var existing = await _context.Profiles.FirstOrDefaultAsync(p => p.UserId == userIdInt);
-            if (existing != null)
+            var existingProfile = await _context.Profiles
+                .AnyAsync(p => p.UserId == userId);
+
+            if (existingProfile)
+                throw new InvalidOperationException("Profile already exists for this user");
+
+            var profile = new Profile
             {
-                throw new InvalidOperationException("Profile already exists for this user.");
-            }
-
-            var profile = _mapper.Map<Dishapi.DAL.Entities.Profile>(dto);
-            profile.UserId = userIdInt;
-            profile.CreatedAt = DateTime.UtcNow;
+                UserId = userId,
+                FirstName = profileDto.FirstName,
+                LastName = profileDto.LastName,
+                PhoneNumber = profileDto.PhoneNumber,
+                Address = profileDto.Address,
+                City = profileDto.City,
+                Country = profileDto.Country,
+                PostalCode = profileDto.PostalCode,
+                CreatedAt = DateTime.UtcNow
+            };
 
             _context.Profiles.Add(profile);
             await _context.SaveChangesAsync();
 
-            return _mapper.Map<ProfileResponseDto>(profile);
+            return MapToResponseDto(profile);
         }
 
-        public async Task<ProfileResponseDto?> UpdateProfileAsync(string id, ProfileUpdateDto dto)
+        public async Task<ProfileResponseDto> UpdateProfileAsync(string userId, ProfileUpdateDto profileDto)
         {
-            if (!int.TryParse(id, out var userIdInt))
-                throw new ArgumentException("Invalid user id");
-            var profile = await _context.Profiles.FirstOrDefaultAsync(p => p.UserId == userIdInt);
-            if (profile == null) return null;
+            if (string.IsNullOrEmpty(userId))
+                throw new ArgumentException("User ID is required");
 
-            _mapper.Map(dto, profile);
+            var profile = await _context.Profiles
+                .FirstOrDefaultAsync(p => p.UserId == userId);
+
+            if (profile == null)
+                throw new KeyNotFoundException("Profile not found");
+
+            profile.FirstName = profileDto.FirstName;
+            profile.LastName = profileDto.LastName;
+            profile.PhoneNumber = profileDto.PhoneNumber;
+            profile.Address = profileDto.Address;
+            profile.City = profileDto.City;
+            profile.Country = profileDto.Country;
+            profile.PostalCode = profileDto.PostalCode;
+            profile.UpdatedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
-            return _mapper.Map<ProfileResponseDto>(profile);
+
+            return MapToResponseDto(profile);
         }
 
-        public async Task<bool> DeleteProfileAsync(string id)
+        public async Task<bool> DeleteProfileAsync(string userId)
         {
-            if (!int.TryParse(id, out var userIdInt))
-                throw new ArgumentException("Invalid user id");
-            var profile = await _context.Profiles.FirstOrDefaultAsync(p => p.UserId == userIdInt);
-            if (profile == null) return false;
+            if (string.IsNullOrEmpty(userId))
+                throw new ArgumentException("User ID is required");
+
+            var profile = await _context.Profiles
+                .FirstOrDefaultAsync(p => p.UserId == userId);
+
+            if (profile == null)
+                return false;
 
             _context.Profiles.Remove(profile);
             await _context.SaveChangesAsync();
+
             return true;
         }
 
-        public async Task<bool> ProfileExistsAsync(string id)
+        public async Task<bool> ProfileExistsAsync(string userId)
         {
-            if (!int.TryParse(id, out var userIdInt))
-                throw new ArgumentException("Invalid user id");
-            return await _context.Profiles.AnyAsync(p => p.UserId == userIdInt);
+            if (string.IsNullOrEmpty(userId))
+                throw new ArgumentException("User ID is required");
+
+            return await _context.Profiles.AnyAsync(p => p.UserId == userId);
         }
 
-        
+        private ProfileResponseDto MapToResponseDto(Profile profile)
+        {
+            return new ProfileResponseDto
+            {
+                Id = profile.Id,
+                UserId = profile.UserId,
+                FirstName = profile.FirstName,
+                LastName = profile.LastName,
+                PhoneNumber = profile.PhoneNumber,
+                Address = profile.Address,
+                City = profile.City,
+                Country = profile.Country,
+                PostalCode = profile.PostalCode,
+                CreatedAt = profile.CreatedAt,
+                UpdatedAt = profile.UpdatedAt
+            };
+        }
     }
 }
-

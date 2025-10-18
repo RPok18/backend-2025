@@ -2,9 +2,8 @@
 using System.Collections.Concurrent;
 using Dishapi.BLL.Services;
 using Dishapi.Core.Dtos;
-using Dishapi.Core.Models;
 using Dishapi.Models;
-
+using Microsoft.AspNetCore.Authorization;
 
 using DalDish = Dishapi.DAL.Entities.Dish;
 using WebDish = Dishapi.Models.Dish;
@@ -166,7 +165,7 @@ namespace Dishapi.Controllers
             };
         }
 
-        [HttpGet]
+        [HttpGet("list")]
         public ActionResult<DishResponse> GetDishes(
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 5,

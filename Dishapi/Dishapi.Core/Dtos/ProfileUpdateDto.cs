@@ -1,12 +1,29 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Dishapi.Core.Dtos
 {
     public class ProfileUpdateDto
     {
-        public string? FullName { get; set; }
-        public string? Bio { get; set; }
-        public DateTime? BirthDate { get; set; }
+        [MaxLength(100)]
+        public string? FirstName { get; set; }
+
+        [MaxLength(100)]
+        public string? LastName { get; set; }
+
+        [Phone]
+        [MaxLength(20)]
+        public string? PhoneNumber { get; set; }
+
+        [MaxLength(500)]
         public string? Address { get; set; }
-        public string? Phone { get; set; }
+
+        [MaxLength(100)]
+        public string? City { get; set; }
+
+        [MaxLength(100)]
+        public string? Country { get; set; }
+
+        [MaxLength(20)]
+        public string? PostalCode { get; set; }
     }
 }
-
