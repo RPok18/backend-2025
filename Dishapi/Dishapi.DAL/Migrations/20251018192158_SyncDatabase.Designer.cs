@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dishapi.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251018111521_AddRatingSystem")]
-    partial class AddRatingSystem
+    [Migration("20251018192158_SyncDatabase")]
+    partial class SyncDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

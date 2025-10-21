@@ -2,7 +2,7 @@
 
 namespace Dishapi.Models
 {
-    public class Class1
+    public class Userprofile
     {
         public int Id { get; set; }
 

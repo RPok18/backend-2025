@@ -1,12 +1,22 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Dishapi.DAL.Entities
 {
     public class User
     {
+        [Key]
         public int Id { get; set; }
-        public string Email { get; set; } = null!;
-        public string PasswordHash { get; set; } = null!;
+
+        [Required]
+        [MaxLength(256)]
+        public string Email { get; set; } = string.Empty;
+
+        [Required]
+        [MaxLength(512)]
+        public string PasswordHash { get; set; } = string.Empty;
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public Profile? Profile { get; set; }
+
+        
     }
 }
-

@@ -18,30 +18,7 @@ namespace Dishapi.Controllers
             _profileService = profileService;
         }
 
-        [HttpGet("me")]
-        public async Task<ActionResult<ProfileResponseDto>> GetProfile()
-        {
-            try
-            {
-                var userId = GetCurrentUserId();
-                var profile = await _profileService.GetProfileByUserIdAsync(userId);
-
-                if (profile == null)
-                {
-                    return NotFound(new { message = "Profile not found." });
-                }
-
-                return Ok(profile);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Unauthorized(new { message = ex.Message });
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, new { message = "An error occurred while retrieving the profile." });
-            }
-        }
+       
 
         [HttpPost]
         public async Task<ActionResult<ProfileResponseDto>> CreateProfile([FromBody] ProfileCreateDto profileDto)
@@ -56,7 +33,7 @@ namespace Dishapi.Controllers
                 var userId = GetCurrentUserId();
                 var profile = await _profileService.CreateProfileAsync(userId, profileDto);
 
-                return CreatedAtAction(nameof(GetProfile), new { }, profile);
+                return Ok(profile);
             }
             catch (ArgumentException ex)
             {

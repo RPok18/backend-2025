@@ -29,7 +29,7 @@ namespace Dishapi.Services
                 throw new InvalidOperationException("User with this email already exists");
             }
 
-            // Create user
+            
             var user = new User
             {
                 Email = dto.Email,
@@ -40,7 +40,7 @@ namespace Dishapi.Services
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            // Create profile linked to user
+          
             var profile = new Profile
             {
                 UserId = user.Id,

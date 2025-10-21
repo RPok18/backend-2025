@@ -58,12 +58,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
                 errorNumbersToAdd: null);
         }));
 
-// existing registrations (keep yours)...
+
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IDishService, DishService>();
 
-// register rating service
+
 builder.Services.AddScoped<IRatingService, RatingService>();
 
 builder.Services.AddAutoMapper(typeof(DishMappingProfile).Assembly);

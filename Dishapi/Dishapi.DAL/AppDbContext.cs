@@ -20,7 +20,7 @@ namespace Dishapi.DAL
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configure Dish
+           
             modelBuilder.Entity<Dish>(entity =>
             {
                 entity.HasKey(e => e.Id);
@@ -29,14 +29,14 @@ namespace Dishapi.DAL
                 entity.HasIndex(e => e.IsAvailable);
             });
 
-            // Configure Profile
+         
             modelBuilder.Entity<Profile>(entity =>
             {
                 entity.HasKey(e => e.Id);
                 entity.HasIndex(e => e.UserId).IsUnique();
             });
 
-            // Configure Rating
+            
             modelBuilder.Entity<Rating>(entity =>
             {
                 entity.HasKey(e => e.Id);
@@ -48,7 +48,7 @@ namespace Dishapi.DAL
                     .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // Configure User
+            
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(e => e.Id);

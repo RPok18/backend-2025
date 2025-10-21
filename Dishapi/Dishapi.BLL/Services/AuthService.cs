@@ -41,12 +41,14 @@ namespace Dishapi.BLL.Services
 
             var profile = new Profile
             {
-                // Profile.UserId is string in your entity
                 UserId = user.Id.ToString(),
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
-                PhoneNumber = dto.Phone ?? string.Empty,
-                Address = dto.Address ?? string.Empty,
+                PhoneNumber = dto.Phone,
+                Address = dto.Address,
+                City = null,
+                Country = null,
+                PostalCode = null,
                 CreatedAt = DateTime.UtcNow
             };
 
@@ -65,7 +67,6 @@ namespace Dishapi.BLL.Services
         public async Task<AuthResponseDto> LoginAsync(LoginDto dto)
         {
             var user = await _context.Users
-                .Include(u => u.Profile)
                 .FirstOrDefaultAsync(u => u.Email == dto.Email);
 
             if (user == null || !VerifyPassword(dto.Password, user.PasswordHash))
@@ -73,11 +74,15 @@ namespace Dishapi.BLL.Services
                 throw new UnauthorizedAccessException("Invalid email or password");
             }
 
+            
+            var profile = await _context.Profiles
+                .FirstOrDefaultAsync(p => p.UserId == user.Id.ToString());
+
             return new AuthResponseDto
             {
                 UserId = user.Id,
                 Email = user.Email,
-                Profile = user.Profile is not null ? MapProfileToDto(user.Profile) : new ProfileResponseDto(),
+                Profile = profile != null ? MapProfileToDto(profile) : new ProfileResponseDto(),
                 Token = GenerateJwtToken(user)
             };
         }
@@ -128,7 +133,6 @@ namespace Dishapi.BLL.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        // Mapping helper: maps entity Profile -> ProfileResponseDto
         private ProfileResponseDto MapProfileToDto(Profile profile)
         {
             if (profile == null) return new ProfileResponseDto();
