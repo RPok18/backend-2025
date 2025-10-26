@@ -20,7 +20,6 @@ builder.Services.AddSwaggerGen(options =>
         Version = "v1",
         Description = "API for managing dishes and profiles"
     });
-
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -30,7 +29,6 @@ builder.Services.AddSwaggerGen(options =>
         In = ParameterLocation.Header,
         Description = "Enter your JWT token in the text input below.\n\nExample: \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\""
     });
-
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -58,12 +56,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
                 errorNumbersToAdd: null);
         }));
 
-
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IDishService, DishService>();
-
-
 builder.Services.AddScoped<IRatingService, RatingService>();
 
 builder.Services.AddAutoMapper(typeof(DishMappingProfile).Assembly);
@@ -105,14 +100,33 @@ if (!string.IsNullOrWhiteSpace(jwtKey))
 
 var app = builder.Build();
 
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+
+    try
+    {
+        
+        await context.Database.MigrateAsync();
+
+        
+        await DbSeeder.SeedAsync(context);
+
+        logger.LogInformation("Database migration and seeding completed successfully");
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "An error occurred while migrating or seeding the database.");
+    }
+}
+
 app.UseSwagger();
 app.UseSwaggerUI();
-
 app.UseCors("AllowAll");
-
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

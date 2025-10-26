@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Dishapi.DAL.Entities;
 
 namespace Dishapi.DAL
@@ -12,15 +12,12 @@ namespace Dishapi.DAL
         public DbSet<Dish> Dishes { get; set; }
         public DbSet<Profile> Profiles { get; set; }
         public DbSet<Rating> Ratings { get; set; }
-
-        
         public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-           
             modelBuilder.Entity<Dish>(entity =>
             {
                 entity.HasKey(e => e.Id);
@@ -29,26 +26,22 @@ namespace Dishapi.DAL
                 entity.HasIndex(e => e.IsAvailable);
             });
 
-         
             modelBuilder.Entity<Profile>(entity =>
             {
                 entity.HasKey(e => e.Id);
                 entity.HasIndex(e => e.UserId).IsUnique();
             });
 
-            
             modelBuilder.Entity<Rating>(entity =>
             {
                 entity.HasKey(e => e.Id);
                 entity.HasIndex(e => new { e.DishId, e.UserId }).IsUnique();
-
                 entity.HasOne(e => e.Dish)
                     .WithMany(d => d.Ratings)
                     .HasForeignKey(e => e.DishId)
                     .OnDelete(DeleteBehavior.Cascade);
             });
 
-            
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(e => e.Id);

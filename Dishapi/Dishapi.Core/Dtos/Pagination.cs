@@ -2,26 +2,16 @@ namespace Dishapi.Core.Dtos
 {
     public class Pagination
     {
-        public int CurrentPage { get; set; } = 1;
-        public int PageSize { get; set; } = 10;
-        public int TotalPages { get; set; }
-        public int TotalItems { get; set; }
-        public bool HasNext { get; set; }
-        public bool HasPrevious { get; set; }
-
-        public Pagination()
-        {
-        }
+        public int CurrentPage { get; }
+        public int PageSize { get; }
+        public int TotalItems { get; }
+        public int TotalPages => PageSize > 0 ? (int)System.Math.Ceiling((double)TotalItems / PageSize) : 0;
 
         public Pagination(int currentPage, int pageSize, int totalItems)
         {
-            CurrentPage = currentPage;
-            PageSize = pageSize;
-            TotalItems = totalItems;
-            TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
-            HasNext = CurrentPage < TotalPages;
-            HasPrevious = CurrentPage > 1;
+            CurrentPage = System.Math.Max(1, currentPage);
+            PageSize = System.Math.Max(1, pageSize);
+            TotalItems = System.Math.Max(0, totalItems);
         }
     }
 }
-

@@ -1,46 +1,32 @@
-using System;
 using System.Collections.Generic;
-using Dishapi.Core.Dtos;
 
-namespace Dishapi.Models
+namespace Dishapi.Core.Dtos
 {
-    public class DishResponse
+    public class DishResponse<T>
     {
-        public List<DishDto>? Dishes { get; set; }
-        public WebPagination? Pagination { get; set; }
+        public bool Success { get; set; } = true;
         public string? Error { get; set; }
-        public bool Success => string.IsNullOrEmpty(Error);
+        public List<T>? Items { get; set; }
+        public Pagination? Pagination { get; set; }
 
-        public DishResponse() { }
-
-        public DishResponse(List<DishDto> dishes, WebPagination pagination)
+        public DishResponse()
         {
-            Dishes = dishes;
+            Success = true;
+        }
+
+        public DishResponse(List<T> items, Pagination pagination)
+        {
+            Success = true;
+            Items = items;
             Pagination = pagination;
         }
 
-        public DishResponse(string error)
+        public DishResponse(string errorMessage)
         {
-            Error = error;
+            Success = false;
+            Error = errorMessage;
+            Items = new List<T>();
+            Pagination = new Pagination(1, 10, 0);
         }
-    }
-
-    
-    public class WebPagination
-    {
-        public int Page { get; set; }
-        public int PageSize { get; set; }
-        public int TotalItems { get; set; }
-        public int TotalPages => (int)Math.Ceiling((double)TotalItems / PageSize);
-
-        public WebPagination(int page, int pageSize, int totalItems)
-        {
-            Page = page;
-            PageSize = pageSize;
-            TotalItems = totalItems;
-        }
-
-        
-        public WebPagination() { }
     }
 }
