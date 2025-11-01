@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Dishapi.BLL.Services;
+using Dishapi.Core.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
-using Dishapi.Models;
-using Dishapi.Services;
 
 namespace Dishapi.Controllers
 {
@@ -18,30 +18,7 @@ namespace Dishapi.Controllers
             _profileService = profileService;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<ProfileResponseDto>> GetProfile()
-        {
-            try
-            {
-                var userId = GetCurrentUserId();
-                var profile = await _profileService.GetProfileByUserIdAsync(userId);
-
-                if (profile == null)
-                {
-                    return NotFound(new { message = "Profile not found." });
-                }
-
-                return Ok(profile);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Unauthorized(new { message = ex.Message });
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, new { message = "An error occurred while retrieving the profile." });
-            }
-        }
+       
 
         [HttpPost]
         public async Task<ActionResult<ProfileResponseDto>> CreateProfile([FromBody] ProfileCreateDto profileDto)
@@ -56,7 +33,11 @@ namespace Dishapi.Controllers
                 var userId = GetCurrentUserId();
                 var profile = await _profileService.CreateProfileAsync(userId, profileDto);
 
-                return CreatedAtAction(nameof(GetProfile), new { }, profile);
+                return Ok(profile);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
             }
             catch (UnauthorizedAccessException ex)
             {
@@ -83,14 +64,17 @@ namespace Dishapi.Controllers
             try
             {
                 var userId = GetCurrentUserId();
-                var updatedProfile = await _profileService.UpdateProfileAsync(userId, profileDto);
+                var profile = await _profileService.UpdateProfileAsync(userId, profileDto);
 
-                if (updatedProfile == null)
-                {
-                    return NotFound(new { message = "Profile not found." });
-                }
-
-                return Ok(updatedProfile);
+                return Ok(profile);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
             }
             catch (UnauthorizedAccessException ex)
             {
@@ -117,6 +101,10 @@ namespace Dishapi.Controllers
 
                 return NoContent();
             }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
             catch (UnauthorizedAccessException ex)
             {
                 return Unauthorized(new { message = ex.Message });
@@ -124,26 +112,6 @@ namespace Dishapi.Controllers
             catch (Exception)
             {
                 return StatusCode(500, new { message = "An error occurred while deleting the profile." });
-            }
-        }
-
-        [HttpGet("exists")]
-        public async Task<ActionResult<object>> ProfileExists()
-        {
-            try
-            {
-                var userId = GetCurrentUserId();
-                var exists = await _profileService.ProfileExistsAsync(userId);
-
-                return Ok(new { exists = exists });
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Unauthorized(new { message = ex.Message });
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, new { message = "An error occurred while checking profile existence." });
             }
         }
 

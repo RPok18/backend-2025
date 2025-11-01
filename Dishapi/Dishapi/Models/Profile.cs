@@ -1,10 +1,12 @@
-﻿using System;
+using System;
+using Dishapi.DAL.Entities;
 
 namespace Dishapi.Models
 {
     public class Profile
     {
         public int Id { get; set; }
+        public int UserId { get; set; }
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public string? FullName { get; set; }
@@ -13,5 +15,6 @@ namespace Dishapi.Models
         public string Address { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public User? User { get; set; }
     }
 }

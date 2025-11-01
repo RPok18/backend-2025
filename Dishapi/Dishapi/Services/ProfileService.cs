@@ -15,22 +15,41 @@ namespace Dishapi.Services
 
         public async Task<Profile> GetProfileAsync(string userId)
         {
-            var profile = await _context.Profiles.FindAsync(int.Parse(userId));
+            if (!int.TryParse(userId, out var userIdInt))
+                throw new ArgumentException("Invalid user id");
+            var profile = await _context.Profiles
+                .FirstOrDefaultAsync(p => p.UserId == userIdInt);
+
             if (profile == null)
-                throw new KeyNotFoundException($"Profile not found");
+                throw new KeyNotFoundException($"Profile not found for user {userId}");
+
             return profile;
         }
 
         public async Task<ProfileResponseDto?> GetProfileByUserIdAsync(string userId)
         {
-            var profile = await _context.Profiles.FindAsync(int.Parse(userId));
+            if (!int.TryParse(userId, out var userIdInt))
+                throw new ArgumentException("Invalid user id");
+            var profile = await _context.Profiles
+                .FirstOrDefaultAsync(p => p.UserId == userIdInt);
+
             return profile == null ? null : MapToResponseDto(profile);
         }
 
         public async Task<ProfileResponseDto> CreateProfileAsync(string userId, ProfileCreateDto dto)
         {
+            if (!int.TryParse(userId, out var userIdInt))
+                throw new ArgumentException("Invalid user id");
+
+            var existing = await _context.Profiles.FirstOrDefaultAsync(p => p.UserId == userIdInt);
+            if (existing != null)
+            {
+                throw new InvalidOperationException("Profile already exists for this user.");
+            }
+
             var profile = new Profile
             {
+                UserId = userIdInt,
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
                 FullName = dto.FullName,
@@ -47,7 +66,9 @@ namespace Dishapi.Services
 
         public async Task<ProfileResponseDto?> UpdateProfileAsync(string id, ProfileUpdateDto dto)
         {
-            var profile = await _context.Profiles.FindAsync(int.Parse(id));
+            if (!int.TryParse(id, out var userIdInt))
+                throw new ArgumentException("Invalid user id");
+            var profile = await _context.Profiles.FirstOrDefaultAsync(p => p.UserId == userIdInt);
             if (profile == null) return null;
 
             if (dto.FullName != null)
@@ -71,7 +92,9 @@ namespace Dishapi.Services
 
         public async Task<bool> DeleteProfileAsync(string id)
         {
-            var profile = await _context.Profiles.FindAsync(int.Parse(id));
+            if (!int.TryParse(id, out var userIdInt))
+                throw new ArgumentException("Invalid user id");
+            var profile = await _context.Profiles.FirstOrDefaultAsync(p => p.UserId == userIdInt);
             if (profile == null) return false;
 
             _context.Profiles.Remove(profile);
@@ -81,7 +104,9 @@ namespace Dishapi.Services
 
         public async Task<bool> ProfileExistsAsync(string id)
         {
-            return await _context.Profiles.AnyAsync(p => p.Id == int.Parse(id));
+            if (!int.TryParse(id, out var userIdInt))
+                throw new ArgumentException("Invalid user id");
+            return await _context.Profiles.AnyAsync(p => p.UserId == userIdInt);
         }
 
         private ProfileResponseDto MapToResponseDto(Profile profile)
@@ -89,6 +114,7 @@ namespace Dishapi.Services
             return new ProfileResponseDto
             {
                 Id = profile.Id.ToString(),
+                UserId = profile.UserId.ToString(),
                 FullName = profile.FullName,
                 Bio = profile.Bio,
                 BirthDate = profile.BirthDate,
