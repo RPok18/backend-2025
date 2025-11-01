@@ -42,7 +42,7 @@ namespace Dishapi.DAL.Entities
 
         public DateTime? UpdatedAt { get; set; }
 
-        
+
         public virtual ICollection<Rating> Ratings { get; set; } = new List<Rating>();
     }
 }

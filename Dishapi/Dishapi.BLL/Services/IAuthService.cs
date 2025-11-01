@@ -9,4 +9,3 @@ namespace Dishapi.BLL.Services
         Task<bool> UserExistsAsync(string email);
     }
 }
-

@@ -17,6 +17,6 @@ namespace Dishapi.DAL.Entities
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        
+
     }
 }

@@ -77,7 +77,7 @@ namespace Dishapi.Controllers
         }
 
         [HttpGet("list")]
-        public async Task<ActionResult<DishResponse<DishDto>>> GetDishes(
+        public async Task<ActionResult<List<DishDto>>> GetDishes(
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 5,
             [FromQuery] string? category = null,
@@ -110,7 +110,6 @@ namespace Dishapi.Controllers
                         : ((d.Name ?? string.Empty).Contains(s) || (d.Description ?? string.Empty).Contains(s)));
                 }
 
-                var totalItems = await query.CountAsync();
                 var items = await query
                     .OrderBy(d => d.Id)
                     .Skip((page - 1) * pageSize)
@@ -120,13 +119,11 @@ namespace Dishapi.Controllers
                 var dishes = items.Select(d => MapToDish(d)).ToList();
                 var dtos = dishes.Select(d => MapToDto(d, language)).ToList();
 
-                var pagination = new Pagination(page, pageSize, totalItems);
-                var response = new DishResponse<DishDto>(dtos, pagination);
-                return Ok(response);
+                return Ok(dtos);
             }
             catch (System.Exception ex)
             {
-                return StatusCode(500, new DishResponse<DishDto>($"An error occurred: {ex.Message}"));
+                return StatusCode(500, new { error = $"An error occurred: {ex.Message}" });
             }
         }
 

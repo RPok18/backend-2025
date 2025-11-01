@@ -74,7 +74,7 @@ namespace Dishapi.BLL.Services
                 throw new UnauthorizedAccessException("Invalid email or password");
             }
 
-            
+
             var profile = await _context.Profiles
                 .FirstOrDefaultAsync(p => p.UserId == user.Id.ToString());
 
