@@ -23,13 +23,13 @@ namespace Dishapi.Services
 
         public async Task<AuthResponseDto> RegisterAsync(RegisterDto dto)
         {
-            
+
             if (await UserExistsAsync(dto.Email))
             {
                 throw new InvalidOperationException("User with this email already exists");
             }
 
-            
+
             var user = new User
             {
                 Email = dto.Email,
@@ -40,7 +40,7 @@ namespace Dishapi.Services
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-          
+
             var profile = new Profile
             {
                 UserId = user.Id,

@@ -16,7 +16,7 @@ namespace Dishapi.Core.Dtos
     public class RatingCreateDto
     {
         [Required]
-        [Range(1, 5, ErrorMessage = "Score must be between 1 and 5")]
+        [Range(1, 10, ErrorMessage = "Score must be between 1 and 10")]
         public int Score { get; set; }
 
         [MaxLength(500, ErrorMessage = "Comment cannot exceed 500 characters")]
@@ -26,7 +26,7 @@ namespace Dishapi.Core.Dtos
     public class RatingUpdateDto
     {
         [Required]
-        [Range(1, 5, ErrorMessage = "Score must be between 1 and 5")]
+        [Range(1, 10, ErrorMessage = "Score must be between 1 and 10")]
         public int Score { get; set; }
 
         [MaxLength(500, ErrorMessage = "Comment cannot exceed 500 characters")]
