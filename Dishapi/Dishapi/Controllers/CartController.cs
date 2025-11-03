@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using Dishapi.BLL.Services;
 using Dishapi.Core.Dtos;
 
@@ -7,6 +8,7 @@ namespace Dishapi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class CartController : ControllerBase
     {
         private readonly ICartService _cartService;
@@ -16,51 +18,109 @@ namespace Dishapi.Controllers
             _cartService = cartService;
         }
 
+        
+
         [HttpGet]
-        public async Task<IActionResult> GetCart([FromHeader(Name = "X-Cart-Id")] string? cartId)
+        public async Task<IActionResult> GetCart()
         {
-            if (string.IsNullOrEmpty(cartId) || !int.TryParse(cartId, out int cartIdInt))
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized(new { message = "User ID not found in token" });
+
+            var cart = await _cartService.GetCartByUserIdAsync(userId);
+
+            if (cart == null)
             {
-                return BadRequest(new { message = "Invalid or missing Cart ID" });
+                return Ok(new CartDto
+                {
+                    CartId = userId,
+                    Items = new List<CartItemDto>(),
+                    TotalAmount = 0,
+                    TotalItems = 0
+                });
             }
 
-            var result = await _cartService.GetCartAsync(cartIdInt);
-            return Ok(result);
+            return Ok(cart);
         }
 
-        [HttpPost("dish/{dishId}")]
-        public async Task<IActionResult> AddDishToBasket(
-            int dishId,
-            [FromQuery] bool increase = true,
-            [FromHeader(Name = "X-Cart-Id")] string? cartId = null)
+        [HttpPost("items")]
+        public async Task<IActionResult> AddToCart([FromBody] AddToCartRequest request)
         {
-            int cartIdInt = 0;
-            if (!string.IsNullOrEmpty(cartId) && int.TryParse(cartId, out int parsedCartId))
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized(new { message = "User ID not found in token" });
+
+            try
             {
-                cartIdInt = parsedCartId;
+                var result = await _cartService.AddToCartAsync(userId, request.DishId, request.Quantity);
+                return Ok(result);
             }
-
-            var result = await _cartService.AddDishAsync(cartIdInt, dishId, increase);
-
-            if (string.IsNullOrEmpty(cartId))
-                Response.Headers.Add("X-Cart-Id", result.CartId.ToString());
-
-            return Ok(result);
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
-        [HttpDelete("dish/{dishId}")]
-        public async Task<IActionResult> RemoveDishFromBasket(
-            int dishId,
-            [FromQuery] bool increase = false,
-            [FromHeader(Name = "X-Cart-Id")] string? cartId = null)
+        [HttpPut("items/{dishId}")]
+        public async Task<IActionResult> UpdateCartItem(int dishId, [FromBody] UpdateCartItemRequest request)
         {
-            if (string.IsNullOrEmpty(cartId) || !int.TryParse(cartId, out int cartIdInt))
-            {
-                return BadRequest(new { message = "Invalid or missing Cart ID" });
-            }
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var result = await _cartService.RemoveDishAsync(cartIdInt, dishId, increase);
-            return Ok(result);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized(new { message = "User ID not found in token" });
+
+            var cart = await _cartService.GetCartByUserIdAsync(userId);
+            if (cart == null)
+                return NotFound(new { message = "Cart not found" });
+
+            var cartItem = cart.Items.FirstOrDefault(i => i.DishId == dishId);
+            if (cartItem == null)
+                return NotFound(new { message = "Dish not found in cart" });
+
+            var result = await _cartService.UpdateCartItemAsync(userId, cartItem.Id, request.Quantity);
+
+            if (!result)
+                return NotFound(new { message = "Failed to update cart item" });
+
+            return Ok(new { message = "Cart item updated successfully" });
+        }
+
+        [HttpDelete("items/{dishId}")]
+        public async Task<IActionResult> RemoveFromCart(int dishId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized(new { message = "User ID not found in token" });
+
+            var cart = await _cartService.GetCartByUserIdAsync(userId);
+            if (cart == null)
+                return NotFound(new { message = "Cart not found" });
+
+            var cartItem = cart.Items.FirstOrDefault(i => i.DishId == dishId);
+            if (cartItem == null)
+                return NotFound(new { message = "Dish not found in cart" });
+
+            var result = await _cartService.RemoveFromCartAsync(userId, cartItem.Id);
+
+            if (!result)
+                return NotFound(new { message = "Failed to remove cart item" });
+
+            return NoContent();
+        }
+
+        [HttpDelete("clear")]
+        public async Task<IActionResult> ClearCart()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized(new { message = "User ID not found in token" });
+
+            await _cartService.ClearCartAsync(userId);
+            return Ok(new { message = "Cart cleared successfully" });
         }
     }
 }

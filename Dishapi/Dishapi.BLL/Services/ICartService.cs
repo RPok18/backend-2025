@@ -1,12 +1,14 @@
-﻿using System.Threading.Tasks;
-using Dishapi.Core.Dtos;
+﻿using Dishapi.Core.Dtos;
+using System.Threading.Tasks;
 
 namespace Dishapi.BLL.Services
 {
     public interface ICartService
     {
-        Task<CartDto> GetCartAsync(int cartId);
-        Task<CartDto> AddDishAsync(int cartId, int dishId, bool increase = true);
-        Task<CartDto> RemoveDishAsync(int cartId, int dishId, bool increase = false);
+        Task<CartDto?> GetCartByUserIdAsync(string userId);
+        Task<CartDto> AddToCartAsync(string userId, int dishId, int quantity);
+        Task<bool> UpdateCartItemAsync(string userId, int itemId, int quantity);
+        Task<bool> RemoveFromCartAsync(string userId, int itemId);
+        Task ClearCartAsync(string userId);
     }
 }

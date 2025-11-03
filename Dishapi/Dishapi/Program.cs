@@ -1,14 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Dishapi.BLL.Services;
-using Dishapi.BLL.Configuration;
-using Dishapi.DAL;
-using AutoMapper;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using System.Security.Claims;
+using Dishapi.BLL.Configuration;
+using Dishapi.BLL.Services;
+using Dishapi.DAL;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace Dishapi
 {
@@ -21,6 +20,7 @@ namespace Dishapi
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
 
+            // Swagger Configuration
             builder.Services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
@@ -32,12 +32,12 @@ namespace Dishapi
 
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
+                    Description = "JWT Authorization header using the Bearer scheme. Enter your token below.",
                     Name = "Authorization",
-                    Type = SecuritySchemeType.Http,
-                    Scheme = "bearer",
-                    BearerFormat = "JWT",
                     In = ParameterLocation.Header,
-                    Description = "Enter your JWT token below.\n\nExample: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\""
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT"
                 });
 
                 options.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -56,6 +56,7 @@ namespace Dishapi
                 });
             });
 
+            // Database Configuration
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(
                     builder.Configuration.GetConnectionString("DefaultConnection"),
@@ -68,6 +69,7 @@ namespace Dishapi
                             errorNumbersToAdd: null);
                     }));
 
+            // Register Services
             builder.Services.AddScoped<IProfileService, ProfileService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IDishService, DishService>();
@@ -75,69 +77,81 @@ namespace Dishapi
             builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
 
+            // AutoMapper Configuration
             builder.Services.AddAutoMapper(
                 typeof(Program).Assembly,
                 typeof(IProfileService).Assembly
             );
 
+            // Delivery Options Configuration
             builder.Services.Configure<DeliveryOptions>(builder.Configuration.GetSection("DeliveryOptions"));
 
+            // CORS Configuration
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", policy =>
                 {
-                    policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                    policy.SetIsOriginAllowed(origin => true)
+                          .AllowAnyMethod()
+                          .AllowAnyHeader()
+                          .AllowCredentials();
                 });
             });
 
-            
-            var jwtSection = builder.Configuration.GetSection("Jwt");
-            var jwtKey = jwtSection.GetValue<string>("Key");
-            var jwtIssuer = jwtSection.GetValue<string>("Issuer");
-            var jwtAudience = jwtSection.GetValue<string>("Audience");
+            // JWT Configuration
+            var jwtKey = builder.Configuration["Jwt:Key"];
+            var jwtIssuer = builder.Configuration["Jwt:Issuer"];
+            var jwtAudience = builder.Configuration["Jwt:Audience"];
 
-            if (!string.IsNullOrWhiteSpace(jwtKey))
-            {
-                builder.Services
-                    .AddAuthentication(options =>
+            // Clear default claim mapping
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+            builder.Services
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                    })
-                    .AddJwtBearer(options =>
-                    {
-                        options.TokenValidationParameters = new TokenValidationParameters
-                        {
-                            ValidateIssuer = true,
-                            ValidateAudience = true,
-                            ValidateLifetime = true,
-                            ValidateIssuerSigningKey = true,
-                            ValidIssuer = jwtIssuer,
-                            ValidAudience = jwtAudience,
-                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
-                        };
-                    });
-            }
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = jwtIssuer,
+                        ValidAudience = jwtAudience,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+
+                        // Ensure ASP.NET Core uses "nameid" as the user identifier
+                        NameClaimType = ClaimTypes.NameIdentifier,
+                        RoleClaimType = ClaimTypes.Role,
+
+                        ClockSkew = TimeSpan.Zero
+                    };
+                });
+
+            builder.Services.AddAuthorization();
 
             var app = builder.Build();
 
-            
-            if (app.Environment.IsDevelopment())
+            // Swagger UI
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
             {
-                app.UseSwagger();
-                app.UseSwaggerUI();
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Dish API v1");
+            });
+
+            if (!app.Environment.IsDevelopment())
+            {
+                app.UseHttpsRedirection();
             }
 
-            app.UseHttpsRedirection();
-
+            // Middleware Pipeline
+            app.UseRouting();
             app.UseCors("AllowAll");
-
             app.UseAuthentication();
             app.UseAuthorization();
-
             app.MapControllers();
 
-            
+            // Run Database Migrations
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
