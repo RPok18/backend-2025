@@ -22,7 +22,7 @@ namespace Dishapi.BLL.Services
             _deliveryOptions = deliveryOptions.Value;
         }
 
-        // Match the interface: accepts CheckoutRequestDto
+        
         public async Task<(bool Success, string? Error, Order? Order)> CheckoutAsync(string userId, CheckoutRequestDto dto)
         {
             if (string.IsNullOrWhiteSpace(userId))
@@ -31,7 +31,7 @@ namespace Dishapi.BLL.Services
             if (!int.TryParse(userId, out int userIdInt))
                 return (false, "Invalid user ID.", null);
 
-            // Load the user's cart (with Dish on cart items, if any)
+            
             var cart = await _db.Carts
                 .Include(c => c.Items)
                     .ThenInclude(ci => ci.Dish)
@@ -76,7 +76,7 @@ namespace Dishapi.BLL.Services
 
                 _db.Orders.Add(order);
 
-                // clear cart items
+               
                 _db.CartItems.RemoveRange(cart.Items);
 
                 await _db.SaveChangesAsync();
@@ -91,7 +91,7 @@ namespace Dishapi.BLL.Services
             }
         }
 
-        // Match the interface: return entity collection
+        
         public async Task<IEnumerable<Order>> GetByUserAsync(string userId)
         {
             if (!int.TryParse(userId, out int userIdInt))

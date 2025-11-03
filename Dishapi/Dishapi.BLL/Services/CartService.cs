@@ -163,6 +163,7 @@ namespace Dishapi.BLL.Services
             return new CartDto
             {
                 CartId = userId, 
+                 
                 Items = items,
                 TotalAmount = (decimal)cartItems.Sum(c => c.Price * c.Quantity),
                 TotalItems = cartItems.Sum(c => c.Quantity)

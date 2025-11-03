@@ -46,9 +46,7 @@ namespace Dishapi.BLL.Services
                 LastName = dto.LastName,
                 PhoneNumber = dto.Phone,
                 Address = dto.Address,
-                City = null,
-                Country = null,
-                PostalCode = null,
+               
                 CreatedAt = DateTime.UtcNow
             };
 
@@ -149,9 +147,7 @@ namespace Dishapi.BLL.Services
                 LastName = profile.LastName,
                 PhoneNumber = profile.PhoneNumber,
                 Address = profile.Address,
-                City = profile.City,
-                Country = profile.Country,
-                PostalCode = profile.PostalCode,
+               
                 CreatedAt = profile.CreatedAt,
                 UpdatedAt = profile.UpdatedAt
             };

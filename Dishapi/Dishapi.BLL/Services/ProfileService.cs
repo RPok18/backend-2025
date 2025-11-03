@@ -23,7 +23,7 @@ namespace Dishapi.BLL.Services
                 .FirstOrDefaultAsync(p => p.UserId == userId);
 
             if (profile == null)
-                return null;
+                return null ;
 
             return MapToResponseDto(profile);
         }
@@ -46,9 +46,7 @@ namespace Dishapi.BLL.Services
                 LastName = profileDto.LastName,
                 PhoneNumber = profileDto.PhoneNumber,
                 Address = profileDto.Address,
-                City = profileDto.City,
-                Country = profileDto.Country,
-                PostalCode = profileDto.PostalCode,
+               
                 CreatedAt = DateTime.UtcNow
             };
 

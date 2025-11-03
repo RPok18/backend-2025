@@ -20,7 +20,7 @@ namespace Dishapi
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
 
-            // Swagger Configuration
+            
             builder.Services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
@@ -56,7 +56,7 @@ namespace Dishapi
                 });
             });
 
-            // Database Configuration
+            
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(
                     builder.Configuration.GetConnectionString("DefaultConnection"),
@@ -69,7 +69,7 @@ namespace Dishapi
                             errorNumbersToAdd: null);
                     }));
 
-            // Register Services
+            
             builder.Services.AddScoped<IProfileService, ProfileService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IDishService, DishService>();
@@ -77,16 +77,16 @@ namespace Dishapi
             builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
 
-            // AutoMapper Configuration
+          
             builder.Services.AddAutoMapper(
                 typeof(Program).Assembly,
                 typeof(IProfileService).Assembly
             );
 
-            // Delivery Options Configuration
+            
             builder.Services.Configure<DeliveryOptions>(builder.Configuration.GetSection("DeliveryOptions"));
 
-            // CORS Configuration
+            
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", policy =>
@@ -98,12 +98,12 @@ namespace Dishapi
                 });
             });
 
-            // JWT Configuration
+           
             var jwtKey = builder.Configuration["Jwt:Key"];
             var jwtIssuer = builder.Configuration["Jwt:Issuer"];
             var jwtAudience = builder.Configuration["Jwt:Audience"];
 
-            // Clear default claim mapping
+           
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
             builder.Services
@@ -120,7 +120,7 @@ namespace Dishapi
                         ValidAudience = jwtAudience,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
 
-                        // Ensure ASP.NET Core uses "nameid" as the user identifier
+                        
                         NameClaimType = ClaimTypes.NameIdentifier,
                         RoleClaimType = ClaimTypes.Role,
 
@@ -132,7 +132,7 @@ namespace Dishapi
 
             var app = builder.Build();
 
-            // Swagger UI
+            
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
@@ -144,14 +144,14 @@ namespace Dishapi
                 app.UseHttpsRedirection();
             }
 
-            // Middleware Pipeline
+            
             app.UseRouting();
             app.UseCors("AllowAll");
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
 
-            // Run Database Migrations
+            
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
